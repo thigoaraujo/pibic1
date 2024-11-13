@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoramento Digital</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #031f46;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+        nav {
+            background-color: #f4f4f4;
+            padding: 0.5rem;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav ul li {
+            margin: 0 10px;
+            position: relative;
+        }
+        nav ul li a {
+            color: #333;
+            text-decoration: none;
+            padding: 10px;
+            display: block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
+        }
+        .main-content {
+            width: 100%;
+        }
+        .expandable-list {
+            list-style: none;
+            padding: 0;
+        }
+        .expandable-item {
+            margin-bottom: 10px;
+        }
+        .expandable-header {
+            background-color: #a9a9a9;
+            padding: 10px;
+            cursor: pointer;
+            border: 1px solid #a4a4a4;
+            border-radius: 4px;
+            color: rgb(0, 0, 0);
+        }
+        .expandable-content {
+            max-height: 0; /* Inicialmente fechado */
+            overflow: hidden;
+            transition: max-height 0.5s ease; /* Animação suave ao abrir/fechar */
+            padding: 0 15px; /* Padding lateral para o conteúdo */
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            background-color: #fff;
+        }
+        .expandable-content.open {
+            max-height: 2000px; /* Altura máxima suficiente para conter o conteúdo */
+            padding: 15px; /* Padding interno quando aberto */
+        }
+        .expandable-header:hover {
+            background-color: #e4e4e4;
+        }
+        .expandable-content h4 {
+            color: #333;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .expandable-content ul {
+            padding-left: 20px;
+        }
+        .expandable-content .controle {
+            background-color: #fcfcfc;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 20px;
+            color: #000000;
+        }
+
+        .expandable-content .controle h6 {
+          font-size: 1rem;
+            color: #b30303;
+        }
+        .expandable-content .fonte {
+            margin-top: 20px;
+        }
+        .expandable-content .fonte a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .expandable-content .fonte a:hover {
+            text-decoration: underline;
+        }
+       
+        footer {
+            background-color: #333;
+        color: rgb(240, 237, 237);
+        text-align: center;
+        padding: 1rem;
+        clear: both;
+        width: 100%; /* Garante que o footer ocupe toda a largura da página */
+        position: relative; /* Certifica-se de que o footer fique no final da página */
+        bottom: 0; /* Garante que o footer fique na parte inferior da tela, se necessário */
+        margin-top: auto; /* Faz o footer ir para o final da página */
+        }
+        
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            .dropdown-content {
+                position: static;
+                box-shadow: none;
+            }
+        }
+
+
+         /* Hero Section */
+         .hero {
+            position: relative;
+            height: 500px;
+            overflow: hidden;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-title {
+            color: white;
+            font-size: 4rem;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .main-content img {
+            max-width: 10%; /* Reduz o tamanho da imagem para 50% da largura do contêiner */
+            height: auto; /* Mantém a proporção da imagem */
+            display: flex; /* Garante que a imagem seja um elemento de bloco */
+            margin: 20px auto; /* Centraliza a imagem e adiciona margem vertical */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="margin: 0;">Monitoramento Digital</h1>
+            <div style="display: flex; align-items: center;">
+                <img src="img/1200px-Instituto_Federal_de_Brasília_-_Marca_Vertical_2015.svg.png" alt="Logo da Parceria 1" style="max-height: 80px; margin-left: 20px;">
+                <img src="img/banner.jpg" alt="Logo da Parceria 2" style="max-height: 80px; margin-left: 10px;">
+            </div>
+        </div>
+        <h2 style="text-align: left; margin: 0;">de programas e projetos nas escolas do ensino médio do GDF-Plano Piloto</h2>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="pg2.html">Projetos e Programas educacionais</a></li>
+            <li class="dropdown">
+                <a href="#escolas">Escolas</a>
+                <div class="dropdown-content">
+                    <a href="cruzeiro1.html">CEMI Cruzeiro</a>
+                    <a href="#">CEM Asa Norte</a>
+                    <a href="elefantebranco.html">CEM Elefante Branco</a>
+                    <a href="freire.html">CEM Paulo Freire</a>
+                    <a href="leste.html">CEM St Leste</a>
+                    <a href="oeste.html">CEM St Oeste</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<section class="hero">
+    <img src="img/CEAN.png" alt="Escola 1" class="hero-image">
+    <div class="hero-overlay">
+        <h1 class="hero-title"><br>CEM Asa norte</h1>
+    </div>
+</section>
+
+    <div class="container">
+        <div class="main-content">
+            <h2>Programas e Projetos da escola</h2>
+            <ul class="expandable-list">
+                <li class="expandable-item">
+                    <div class="expandable-header">Programa de Inovação Educação Conectada (PIEC)</div>
+                    <div class="expandable-content">
+                        <img src="img/piec.png" alt="Bolsitas: Maria Fernanda Santo (A esquerda da img) e Thiago Araújo( direita da img).">
+                        <p>O Programa de Inovação Educação Conectada (PIEC) é uma iniciativa importante para melhorar a qualidade da educação básica no Brasil, focando no uso de tecnologias digitais. Vamos entender um pouco mais sobre ele:</p>
+
+                        <h4>Origem e Estrutura Legal</h4>
+                        <ul>
+                            <li><b>Instituição:</b> O PIEC foi criado pelo Decreto 9.204, de 23 de novembro de 2017.</li>
+                            <li><b>Fortalecimento Legal:</b> Em 1º de julho de 2021, o PIEC se tornou uma política oficial com a publicação da Lei nº 14.180. Essa lei garante segurança jurídica e fornece diretrizes claras para a implementação do programa.</li>
+                        </ul>
+                        
+                        <h4>Execução</h4>
+                        <ul>
+                            <li><b>Responsabilidade:</b> A execução do PIEC é realizada pela Diretoria de Articulação e Apoio às Redes de Educação Básica. Dentro dessa diretoria, a Coordenação-Geral de Tecnologia e Inovação da Educação Básica (CGTI) é a principal responsável pelo programa.</li>
+                        </ul>
+                        
+                        <h4>Objetivos do PIEC</h4>
+                        <ul>
+                            <li><b>Universalização do Acesso à Internet:</b> O PIEC visa garantir que todas as escolas tenham acesso à internet de alta velocidade.</li>
+                            <li><b>Uso Pedagógico de Tecnologias Digitais:</b> Além de fornecer acesso à internet, o programa incentiva o uso de ferramentas digitais como parte do ensino, ajudando professores e alunos a integrar essas tecnologias no aprendizado diário.</li>
+                        </ul>
+                        
+                        <h4>Importância</h4>
+                        <ul>
+                            <li><b>Melhoria da Qualidade da Educação:</b> Com internet de alta velocidade e tecnologias digitais, as escolas podem oferecer melhores recursos educacionais.</li>
+                            <li><b>Inclusão Digital:</b> Garante que todos os alunos, independentemente de onde vivam, tenham acesso às mesmas oportunidades tecnológicas.</li>
+                            <li><b>Preparação para o Futuro:</b> Equipar os alunos com habilidades digitais é essencial para prepará-los para o mercado de trabalho e a vida moderna.</li>
+                        </ul>
+                        
+                        <p>O Programa de Inovação Educação Conectada é um passo significativo para modernizar a educação no Brasil. Com suporte legal robusto e uma estrutura dedicada à sua implementação, o PIEC tem o potencial de transformar a maneira como a educação é conduzida, garantindo que todos os alunos tenham acesso às ferramentas digitais necessárias para um aprendizado eficaz e contemporâneo.</p>
+                        
+                        <div class="controle">
+                            <h4>Situação Atual</h4>
+                            <h6>Embora uma escola tenha sido selecionada pela rede para participar do programa, o projeto ainda não foi iniciado.</h6>
+                            <p><b>Controle Social:</b> É fundamental que a comunidade escolar, pais, alunos e a sociedade em geral acompanhem e cobrem a implementação desse projeto. O controle social é um elemento chave para garantir que os recursos e iniciativas públicas sejam efetivamente realizados. Participar das reuniões escolares, acompanhar as decisões dos gestores e demandar transparência são ações essenciais para que projetos como o PIEC se concretizem.</p>
+                        </div>
+                        
+                        <div class="fonte">
+                            <h4>Fontes</h4>
+                            <ul>
+                                <li><a href="https://www.gov.br/mec/pt-br/areas-de-atuacao/eb/piec">Programa de Inovação Educação Conectada (PIEC)</a></li>
+                                <li><a href="https://drive.google.com/file/d/1Z8bHPQVLQEb-qbjkUZUFzoHwAcNDbGMT/view?usp=sharing">Resposta do Participa DF Através do Pedido de Acesso à Informação</a></li>
+                                <li><a href="http://portal.mec.gov.br/secretaria-de-educacao-basica/apresentacao">Secretaria de Educação, Disponível</a></li>
+                                <li><a href="https://www.educacao.df.gov.br/">Secretaria de Educação do Governo do Distrito Federal (SEE-DF)</a></li>
+                                <li><a href="https://www.gov.br/mec/pt-br">Ministério da Educação</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li class="expandable-item">
+                    <div class="expandable-header">Plano de Ações Articuladas (PAR)</div>
+                    <div class="expandable-content">
+                        <img src="img/par.png" alt="Imagem do Plano de Ações Articuladas">
+                        <p>O Plano de Ações Articuladas (PAR) é uma importante estratégia do governo brasileiro para melhorar a educação no país. Ele faz parte do Plano de Metas Compromisso Todos pela Educação, que foi instituído pelo Decreto nº 6.094, de 24 de abril de 2007. Vamos entender melhor o que é o PAR e como ele funciona.</p>
+
+                        <h4>Origem e Estrutura</h4>
+                        <ul>
+                            <li><b>Instituição:</b> O PAR foi criado como parte do Plano de Desenvolvimento da Educação (PDE), que é uma política ampla de melhoria da educação.</li>
+                            <li><b>Propósito:</b> O PAR oferece aos estados e municípios uma ferramenta para diagnóstico e planejamento das suas políticas educacionais, com o objetivo de construir um sistema nacional de ensino mais eficiente.</li>
+                        </ul>
+                        
+                        <h4>Objetivos do PAR</h4>
+                        <ul>
+                            <li><b>Estruturação e Gestão de Metas:</b> O PAR é usado para definir e gerenciar metas estratégicas na educação, ajudando a planejar ações que melhorem a oferta e a qualidade da educação.</li>
+                            <li><b>Planejamento Plurianual:</b> Ele serve como um plano de trabalho de longo prazo para desenvolver ações que ampliem a oferta de educação, garantam a permanência dos alunos nas escolas e melhorem as condições de ensino.</li>
+                        </ul>
+                        
+                        <h4>Dimensões de Ação</h4>
+                        <p>O PAR foca em quatro dimensões principais:</p>
+                        <ul>
+                            <li><b>Gestão Educacional:</b> Melhoria da administração das escolas e dos sistemas de ensino.</li>
+                            <li><b>Formação de Professores e Profissionais:</b> Capacitação dos professores e dos profissionais de serviço e apoio escolar.</li>
+                            <li><b>Práticas Pedagógicas e Avaliação:</b> Desenvolvimento de melhores métodos de ensino e avaliação dos alunos.</li>
+                            <li><b>Infraestrutura Física e Recursos Pedagógicos:</b> Melhoria das instalações escolares e dos materiais de ensino.</li>
+                        </ul>
+                        
+                        <h4>Implementação</h4>
+                        <ul>
+                            <li><b>Diagnóstico e Planejamento:</b> O processo de elaboração do PAR envolve uma etapa de diagnóstico da situação educacional local, seguida de um planejamento estratégico e uma análise técnica.</li>
+                            <li><b>Sistema de Monitoramento:</b> As ações planejadas são acompanhadas pelo Sistema Integrado de Monitoramento, Execução e Controle do Ministério da Educação (SIMEC).</li>
+                        </ul>
+                        
+                        <h4>Alinhamento com o Plano Nacional de Educação (PNE)</h4>
+                        <p>Desde seu terceiro ciclo (2016 a 2020), o PAR tem sido alinhado com o Plano Nacional de Educação (PNE), que define as diretrizes para as políticas públicas educacionais de 2014 a 2024.</p>
+                        
+                        <h4>Conclusão</h4>
+                        <p>O Plano de Ações Articuladas é uma ferramenta vital para o planejamento e desenvolvimento da educação no Brasil. Mesmo com sua suspensão temporária, é crucial que a sociedade continue vigilante e ativa, garantindo que as metas educacionais sejam retomadas e atingidas para o benefício de todos os alunos.</p>
+                        
+                        <div class="controle">
+                            <h4>Situação Atual</h4>
+                            <h6>Importante: O projeto do PAR está suspenso temporariamente.</h6>
+                            <p><b>Controle Social:</b> A participação da comunidade é essencial para garantir que projetos como o PAR sejam retomados e implementados de forma eficaz. O controle social pode ser exercido por meio da participação em reuniões escolares, acompanhamento das decisões dos gestores e demanda por transparência nas ações e investimentos. Envolver-se e cobrar a continuidade e execução do PAR são passos fundamentais para melhorar a educação em nossas comunidades.</p>
+                        </div>
+                        
+                        <div class="fonte">
+                            <h4>Fontes</h4>
+                            <ul>
+                                <li><a href="https://www.gov.br/fnde/pt-br/acesso-a-informacao/acoes-e-programas/programas/par">Plano de Ações Articuladas</a></li>
+                                <li><a href="https://www.gov.br/fnde/pt-br/assuntos/noticias/conheca-mais-sobre-o-plano-de-acoes-articuladas-1">Conheça Mais Sobre o Plano de Ações Articuladas</a></li>
+                                <li><a href="https://drive.google.com/file/d/1Z8bHPQVLQEb-qbjkUZUFzoHwAcNDbGMT/view?usp=sharing">Resposta do Participa DF Através do Pedido de Acesso à Informação</a></li>
+                                <li><a href="http://portal.mec.gov.br/secretaria-de-educacao-basica/apresentacao">Secretária de Educação, Disponível</a></li>
+                                <li><a href="https://www.educacao.df.gov.br/">Secretária de Educação do Governo do Distrito Federal (SEE-DF)</a></li>
+                                <li><a href="https://www.gov.br/mec/pt-br">Ministério da Educação</a></li>
+                            </ul>
+                        </div>                        
+                        
+                    </div>
+                </li>
+                
+                <li class="expandable-item">
+                    <div class="expandable-header">Exame Nacional do Ensino Médio (Enem)</div>
+                    <div class="expandable-content">
+                        <img src="img/enem.png" alt="Imagem do Exame Nacional do Ensino Médio">
+                        <p>O Exame Nacional do Ensino Médio (Enem) é uma prova importante no Brasil, instituída em 1998, que tem como objetivo avaliar o desempenho escolar dos estudantes ao término da educação básica. Em 2009, o Enem passou por uma reformulação e começou a ser utilizado também como uma forma de acesso ao ensino superior.</p>
+                        <h4>Principais Utilizações do Enem</h4>
+                        <ul>
+                            <li><b>Sistema de Seleção Unificada (Sisu):</b> As notas do Enem podem ser usadas para ingressar em universidades públicas através do Sisu.</li>
+                            <li><b>Programa Universidade para Todos (ProUni):</b> As notas do Enem também são utilizadas para obter bolsas de estudo em universidades privadas por meio do ProUni.</li>
+                            <li><b>Acordos Internacionais:</b> Algumas instituições de ensino superior em Portugal aceitam as notas do Enem para admissão de estudantes brasileiros, graças a acordos com o Instituto Nacional de Estudos e Pesquisas Educacionais Anísio Teixeira (Inep).</li>
+                            <li><b>Financiamento Estudantil (FIES):</b> Participantes do Enem podem solicitar financiamento para seus estudos através de programas governamentais como o Fundo de Financiamento Estudantil (Fies).</li>
+                        </ul>
+                        
+                        <h4>Estrutura do Exame</h4>
+                        <p>O Enem é composto por provas em quatro áreas de conhecimento, somando um total de 180 questões objetivas:</p>
+                        <ul>
+                            <li>Linguagens, Códigos e suas Tecnologias</li>
+                            <li>Ciências Humanas e suas Tecnologias</li>
+                            <li>Ciências da Natureza e suas Tecnologias</li>
+                            <li>Matemática e suas Tecnologias</li>
+                        </ul>
+                        <p>Além das questões objetivas, há também uma redação, onde os participantes devem desenvolver um texto dissertativo-argumentativo com base em uma situação-problema.</p>
+                        
+                        <h4>Quem Pode Participar</h4>
+                        <ul>
+                            <li><b>Estudantes do Ensino Médio:</b> Qualquer pessoa que tenha concluído ou esteja concluindo o ensino médio pode fazer o Enem para acessar a educação superior.</li>
+                            <li><b>Treineiros:</b> Estudantes que ainda não concluíram o ensino médio podem participar como "treineiros" para autoavaliação dos seus conhecimentos.</li>
+                        </ul>
+                        
+                        <h4>Aplicação e Inclusão</h4>
+                        <p>O exame é aplicado em dois dias, geralmente em duas semanas aos domingos. A Política de Acessibilidade e Inclusão do Inep garante atendimento especializado, tratamento pelo nome social e diversos recursos de acessibilidade. Há também uma versão do Enem para pessoas privadas de liberdade.</p>
+                        
+                        <h4>Participação dos Estudantes da Escola</h4>
+                        <p>Os estudantes da escola podem participar do Enem, caso tenham interesse. É uma ótima oportunidade para medir seus conhecimentos e buscar acesso ao ensino superior.</p>
+                        
+                        <h4>Conclusão</h4>
+                        <p>O Enem é uma ferramenta poderosa para acessar a educação superior e medir o desempenho escolar. Incentivamos todos os estudantes interessados a participar e a comunidade a se envolver ativamente para garantir que o processo seja justo e transparente.</p>
+                        
+                        <div class="fonte">
+                            <h4>Fonte</h4>
+                            <ul>
+                                <li><a href="https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem">Instituto Nacional de Estudos e Pesquisas Educacionais Anísio Teixeira</a></li>
+                                <li><a href="https://www.gov.br/pt-br">Serviços e Informações do Brasil</a></li>
+                                <li><a href="https://drive.google.com/file/d/1Z8bHPQVLQEb-qbjkUZUFzoHwAcNDbGMT/view?usp=sharing">Resposta do Participa DF Através do Pedido de Acesso à Informação</a></li>
+                                <li><a href="http://portal.mec.gov.br/secretaria-de-educacao-basica/apresentacao">Secretaria de Educação</a></li>
+                                <li><a href="https://www.educacao.df.gov.br/">Secretaria de Educação do Governo do Distrito Federal (SEE-DF)</a></li>
+                                <li><a href="https://www.gov.br/mec/pt-br">Ministério da Educação</a></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </li>
+                <li class="expandable-item">
+                    <div class="expandable-header">Programa de Apoio à Implementação da Base Nacional Comum Curricular (ProBNCC)</div>
+                    <div class="expandable-content">
+                        <p>O Programa de Apoio à Implementação da Base Nacional Comum Curricular (ProBNCC) é uma iniciativa do Ministério da Educação (MEC), instituída pela Portaria MEC nº 331, de 5 de abril de 2018. Este programa é gerenciado pela Diretoria de Políticas e Regulação da Educação Básica, dentro da Coordenação-Geral de Gestão Estratégica da Educação Básica (COGEB).</p>
+
+                        <h4>Objetivo do ProBNCC</h4>
+                        <p>O principal objetivo do ProBNCC é apoiar as secretarias estaduais e municipais de Educação, assim como a Secretaria de Educação do Distrito Federal, no processo de revisão, elaboração e implementação dos currículos escolares alinhados à Base Nacional Comum Curricular (BNCC).</p>
+                        
+                        <h4>Principais Metas do ProBNCC</h4>
+                        <ul>
+                            <li><b>Implementação da BNCC:</b> Auxiliar na implementação da BNCC em todas as unidades federativas, monitorando as metas alcançadas pelos estados e garantindo que os referenciais curriculares estejam alinhados à BNCC.</li>
+                        </ul>
+                        
+                        <h4>Indicadores de Resultados e Impacto</h4>
+                        <p>Para garantir a eficácia do programa, são utilizados diversos indicadores, incluindo:</p>
+                        <ul>
+                            <li><b>Relatórios de Monitoramento:</b> Estados enviam relatórios periódicos sobre a implementação dos currículos alinhados à BNCC.</li>
+                            <li><b>Relatórios dos Bolsistas:</b> Os bolsistas responsáveis pela implementação do programa enviam relatórios mensais detalhando suas atividades e progressos.</li>
+                        </ul>
+                        
+                        <h4>Conclusão</h4>
+                        <p>O ProBNCC é uma ferramenta fundamental para a modernização e melhoria da educação no Brasil, alinhando os currículos escolares à Base Nacional Comum Curricular. É vital que a comunidade continue vigilante e ativa para garantir que este programa seja implementado de forma eficaz, proporcionando uma educação de qualidade para todos os alunos.</p>
+                        
+                        <div class="controle">
+                            <h4>Situação Atual</h4>
+                            <h6>Implementado na rede; em tratativas com o FNDE.</h6>
+                            <p><b>Controle Social:</b> A participação ativa da comunidade escolar e da sociedade é essencial para garantir a transparência e eficácia do ProBNCC. Exercitar o controle social significa acompanhar as atividades do programa, participar de reuniões escolares, monitorar os relatórios de progresso e exigir transparência nos processos e investimentos. Envolver-se e cobrar a continuidade e eficácia do ProBNCC é crucial para assegurar que os currículos escolares sejam adequados e beneficiem os estudantes.</p>
+                        </div>
+                        
+                        <div class="fonte">
+                            <h4>Fontes</h4>
+                            <ul>
+                                <li><a href="https://drive.google.com/file/d/1ZBzGhgwfAYrVA9YyHza9fFI9HCuPd0gy/view?usp=sharing">Base Nacional Comum Curricular</a></li>
+                                <li><a href="https://observatoriodeeducacao.institutounibanco.org.br/cedoc/detalhe/ta-programa-de-apoio-a-implementacao-da-bncc-probncc-documento-orientador-2019,4a6e4f2f-88d5-4fb0-a19a-02be5b654f31">Programa de Apoio à Implementação da BNCC</a></li>
+                                <li><a href="https://www.gov.br/mec/pt-br/areas-de-atuacao/eb/programa-de-apoio-a-implementacao-da-base-nacional-comum-curricular-probncc">Programa de Apoio à Implementação da Base Nacional Comum Curricular (ProBNCC)</a></li>
+                                <li><a href="https://drive.google.com/file/d/1Z8bHPQVLQEb-qbjkUZUFzoHwAcNDbGMT/view?usp=sharing">Resposta do Participa DF Através do Pedido de Acesso à Informação</a></li>
+                                <li><a href="https://www.educacao.df.gov.br/">Secretaria de Educação do Governo do Distrito Federal (SEE-DF)</a></li>
+                                <li><a href="https://www.gov.br/mec/pt-br">Ministério da Educação</a></li>
+                                <li><a href="http://portal.mec.gov.br/secretaria-de-educacao-basica/apresentacao">Secretaria de Educação</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li class="expandable-item">
+                    <div class="expandable-header">Programa Nacional do Livro e do Material Didático (PNLD)</div>
+                    <div class="expandable-content">
+                       <p>O Programa Nacional do Livro e do Material Didático (PNLD) é uma iniciativa do Ministério da Educação (MEC) que visa disponibilizar de maneira sistemática, regular e gratuita obras didáticas, pedagógicas, literárias e outros materiais de apoio à prática educativa para escolas públicas de educação básica e instituições de educação infantil comunitárias, confessionais ou filantrópicas sem fins lucrativos e conveniadas com o Poder Público.
+                        Unificação e Ampliação do PNLD.</p>
+                        <h3 id="PNLD">Programa Nacional do Livro e do Material Didático (PNLD)</h3>
+                        <p class="description">O Programa Nacional do Livro e do Material Didático (PNLD) é uma iniciativa do Ministério da Educação (MEC) que visa disponibilizar de maneira sistemática, regular e gratuita obras didáticas, pedagógicas, literárias e outros materiais de apoio à prática educativa para escolas públicas de educação básica e instituições de educação infantil comunitárias, confessionais ou filantrópicas sem fins lucrativos e conveniadas com o Poder Público.</p>
+                        
+                        <h4>Unificação e Ampliação do PNLD</h4>
+                        <p>O Decreto nº 9.099/2017 unificou as ações de aquisição e distribuição de livros didáticos e literários que antes eram contempladas pelo Programa Nacional do Livro Didático (PNLD) e pelo Programa Nacional Biblioteca da Escola (PNBE). Sob nova nomenclatura, o PNLD ampliou seu escopo, incluindo outros materiais de apoio à prática educativa, como obras pedagógicas, softwares, jogos educacionais, materiais de reforço, entre outros.</p>
+                        
+                        <h4>Ciclos de Atendimento e Segmentos</h4>
+                        <p>A execução do PNLD é realizada de forma alternada, atendendo em ciclos diferentes os quatro segmentos: educação infantil, anos iniciais do ensino fundamental, anos finais do ensino fundamental e ensino médio. Segmentos não atendidos em um ciclo recebem livros como complementação para novas matrículas registradas ou reposição de obras avariadas ou não devolvidas.</p>
+                        
+                        <h4>Escolha e Distribuição dos Livros</h4>
+                        <p>A escolha dos livros didáticos é feita pelas escolas, desde que inscritos no PNLD e aprovados em avaliações pedagógicas coordenadas pelo MEC. Os materiais são inscritos pelos detentores de direitos autorais e avaliados por especialistas, integrando o Guia Digital do PNLD, que orienta a escolha das coleções para cada etapa de ensino.</p>
+                        
+                        <h4>Recebimento dos Livros na Escola</h4>
+                        <p>Para receber os livros didáticos do PNLD, a escola deve participar do Censo Escolar do INEP e a rede à qual está vinculada ou a escola federal deve ter aderido formalmente ao programa. A distribuição é feita pelo Fundo Nacional de Desenvolvimento da Educação (FNDE) em contrato com a Empresa Brasileira de Correios e Telégrafos (ECT), chegando às escolas entre outubro do ano anterior e o início do ano letivo.</p>
+                        
+                        <p><b>Contato e Esclarecimentos:</b> Para mais informações sobre a distribuição de obras, sugere-se o contato com o FNDE através do portal <a href="http://www.fnde.gov.br">www.fnde.gov.br</a>, e-mail <a href="mailto:sac@fnde.gov.br">sac@fnde.gov.br</a> ou pelo telefone 0800 616161.</p>
+                        
+                        <div class="controle">
+                            <h4>Situação Atual</h4>
+                            <h6>Implementado na rede; em tratativas com o FNDE.</h6>
+                            <p><b>Controle Social:</b> É importante ressaltar a participação ativa da comunidade escolar e da sociedade para garantir a transparência e eficácia do PNLD. Acompanhar as atividades do programa, monitorar os relatórios de progresso e exigir transparência nos processos e investimentos são formas de exercer o controle social.</p>
+                        </div>
+                        
+                        <div class="fonte">
+                            <h4>Fonte</h4>
+                            <ul>
+                                <li><a href="http://portal.mec.gov.br/component/content/article?id=12391:pnld">Programa Nacional do Livro e do Material Didático</a></li>
+                                <li><a href="https://drive.google.com/file/d/1Z8bHPQVLQEb-qbjkUZUFzoHwAcNDbGMT/view?usp=sharing">Resposta do Participa DF Através do Pedido de Acesso à Informação</a></li>
+                                <li><a href="http://portal.mec.gov.br/secretaria-de-educacao-basica/apresentacao">Secretaria de Educação</a></li>
+                                <li><a href="https://www.educacao.df.gov.br/">Secretaria de Educação do Governo do Distrito Federal (SEE-DF)</a></li>
+                                <li><a href="https://www.gov.br/mec/pt-br">Ministério da Educação</a></li>
+                            </ul>
+                        </div>
+             </div>
+                </li>
+                <li class="expandable-item">
+                    <div class="expandable-header">Descubra o Novo Ensino Médio</div>
+                    <div class="expandable-content">
+                        <p>O Novo Ensino Médio traz muitas novidades para estudantes, professores e gestores escolares. Agora, os estudantes têm mais liberdade para escolher seus caminhos de aprendizagem. Eles podem explorar diferentes áreas como Linguagens, Matemática, Ciências da Natureza, Ciências Humanas e Sociais, ou optar por formações técnicas e profissionais oferecidas pela escola.</p>
+                        <h4>Que muda para você, estudante?</h4>
+    <ul>
+        <li><b>Mais tempo para aprender:</b> A carga horária aumenta de 2400 para 3000 horas. Isso significa mais tempo para estudar o que é essencial e se aprofundar nos temas que mais interessam.</li>
+        <li><b>Projeto de vida:</b> Os professores vão te ajudar a construir seu projeto de vida, para que suas escolhas ao longo do ensino médio estejam alinhadas com seus objetivos pessoais e profissionais.</li>
+        <li><b>Menos aulas expositivas, mais projetos práticos:</b> Aulas serão mais dinâmicas, com projetos, oficinas e atividades práticas que envolvem diferentes áreas de conhecimento, não só disciplinas isoladas.</li>
+    </ul>
+    
+    <h4>E para os professores?</h4>
+    <ul>
+        <li><b>Nova BNCC:</b> Todos os conhecimentos necessários estão na Base Nacional Comum Curricular, organizados por áreas do conhecimento ao invés de disciplinas isoladas.</li>
+        <li><b>Flexibilidade pedagógica:</b> Maior liberdade para ajustar a carga horária de acordo com as necessidades dos estudantes e do contexto escolar.</li>
+    </ul>
+    
+    <h4>E os gestores escolares?</h4>
+    <ul>
+        <li><b>Ampliação da carga horária:</b> De 2400 para 3000 horas, com dois blocos de aprendizagem: um comum a todos os estudantes e outro com itinerários formativos escolhidos pelos alunos.</li>
+        <li><b>Parcerias educacionais:</b> Oportunidade de parcerias com outras instituições para oferecer mais opções de itinerários formativos aos estudantes.</li>
+    </ul>
+    
+    <h4>Implementação do Novo Ensino Médio:</h4>
+    <p><b>Apoio do MEC:</b> Programas de fomento, apoio técnico e financeiro para as escolas implementarem as mudanças com sucesso.</p>
+    
+    <h4>Fonte:</h4>
+    <div class="fonte">
+        <ul>
+            <li><a href="https://www.gov.br/mec/pt-br/novo-ensino-medio/">Ministério da Educação</a></li>
+            <li><a href="https://www.gov.br/mec/pt-br/novo-ensino-medio/informacoes/programa-de-apoio-ao-novo-ensino-medio">Gov.br</a></li>
+        </ul>
+    </div>
+                    </div>
+                </li>
+                <li class="expandable-item">
+                    <div class="expandable-header">Programa Pé-de-Meia: Incentivando a Educação</div>
+                    <div class="expandable-content">
+                        <p>O Programa Pé-de-Meia é um incentivo financeiro-educacional voltado para estudantes matriculados no ensino médio público, beneficiários do Bolsa Família. Lançado em novembro de 2023 pela Secretaria de Educação Básica (SEB), em parceria com o Ministério da Fazenda, Ministério do Desenvolvimento Social, Caixa Econômica Federal, NEES/UFAL e UFSC, o programa visa democratizar o acesso à educação e reduzir desigualdades sociais.</p>
+                        <h4>Objetivo e Funcionamento</h4>
+    <p>O programa funciona como uma poupança, incentivando a permanência e conclusão escolar dos estudantes. Os beneficiários recebem um incentivo mensal de R$ 200, que pode ser sacado a qualquer momento, além dos depósitos anuais de R$ 1.000, que só podem ser retirados após a formação no ensino médio. Ao participar do Enem, há um adicional de R$ 200. No total, cada aluno pode receber até R$ 9.200 ao longo do programa.</p>
+    
+    <h4>Responsabilidades e Adesão</h4>
+    <p>As redes de ensino médio (federais, estaduais, distritais ou municipais) assinam um termo de compromisso para adesão ao programa. Elas são responsáveis ​​por fornecer dados dos estudantes ao MEC através de um sistema informatizado. O MEC, por sua vez, verifica os requisitos para pagamento dos incentivos e envia as informações à Caixa Econômica Federal, que realiza os pagamentos. Os estudantes podem consultar seus benefícios pelo aplicativo Jornada do Estudante.</p>
+    
+    <h4>Impacto Social</h4>
+    <p>O Pé-de-Meia não apenas apoia financeiramente os estudantes, mas também promove a inclusão educacional e estimula a mobilidade social, contribuindo para um futuro mais promissor para os jovens brasileiros.</p>
+    
+    <h4>Calendário de Pagamentos</h4>
+    <!-- Você pode adicionar o conteúdo do calendário aqui, caso tenha informações específicas sobre as datas. -->
+    
+    <h4>Fontes</h4>
+    <div class="fonte">
+        <ul>
+            <li><a href="https://www.gov.br/mec/pt-br/pe-de-meia">Gov.br</a></li>
+        </ul>
+    </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Desenvolvido por Maria Fernada Santos & Thiago Araújo.</p>
+    </footer>
+    <script>
+        document.querySelectorAll('.expandable-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                content.classList.toggle('open'); // Adiciona ou remove a classe 'open'
+            });
+        });
+    </script>
+</body>
+</html>
